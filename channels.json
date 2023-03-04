@@ -1,0 +1,10 @@
+{
+    "channel1": {
+        "not_keywords": "развлечение,мем,видео,прикол",
+        "only_keywords": ""
+    },
+    "channel2": {
+        "not_keywords": "грустн,проблем",
+        "only_keywords": "работ,мечт,жизнь"
+    }
+}

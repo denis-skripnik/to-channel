@@ -1,0 +1,6 @@
+{
+    "CHANNEL_ID": "@login",
+    "TELEGRAM_BOT_TOKEN": "ADD_HEAR_TOKEN",
+    "minutes": 5,
+    "min_length": 500
+}
