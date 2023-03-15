@@ -2,7 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
 
-const {CHANNEL_ID, TELEGRAM_BOT_TOKEN, minutes} = require('./config.json');
+const {CHANNEL_ID, TELEGRAM_BOT_TOKEN, minutes, min_length} = require('./config.json');
 
 const { Bot } = require("grammy");
 const bot = new Bot(TELEGRAM_BOT_TOKEN);
@@ -33,17 +33,21 @@ async function scrapeAndSend(login, only_keywords, not_keywords) {
     const recentPosts = posts.filter(post => post.date > hourAgo);
 
     for (const post of recentPosts) {
+      if (post.text === 'Live stream started') {
+        post.text = `<a href="https://t.me/${login}?livestream">${post.text}</a>`;
+      }
       const htmlMessage = `<a href="${post.url}">${login}</a>\n${post.text}
 
-@vizrus`;
+${CHANNEL_ID}`;
 const allowedTags = ['a', 'b', 'strong', 'i', 'em', 'code', 'pre', 'strike', 'del', 'u', 's', 'br', 'p'];
 const message = htmlMessage
   .replace(/<(\/)?((?!\/?\s*)?(\b(?:a|b|strong|i|em|code|pre|strike|del|u|s|br|p)\b))(?:\s+(?!href)\S+="[^"]*")*(\s*href="[^"]*")?(?:(?:(?<=\s)\/)?>|(?<=\S)\/>)/gi, '<$1$2$4>')
   .replace(/(<p>|<\/p>|<br\/>|<br>)/gi, '\n');
-if (message.length < conf.min_length) continue;
+  if (message.length < min_length || message.indexOf('null') > -1) continue;
                 const lowerCaseMessage = message.toLowerCase();
       if (only_keywords && only_keywords.length > 0 && only_keywords[0] !== '' && !only_keywords.some(keyword => lowerCaseMessage.includes(keyword))) continue;
       if (not_keywords && not_keywords.length > 0  && not_keywords[0] !== '' && not_keywords.some(keyword => lowerCaseMessage.includes(keyword))) continue;
+     
       await bot.api.sendMessage(CHANNEL_ID, message, { parse_mode: 'HTML' });
     }
     console.log(`Scraped ${recentPosts.length} posts for @${login}`);
