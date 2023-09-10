@@ -37,7 +37,7 @@ async function scrapeAndSend(login, only_keywords, not_keywords) {
       if (post.text === 'Live stream started') {
         post.text = `<a href="https://t.me/${login}?livestream">${post.text}</a>`;
       }
-      if (channels_logins.some(function(v) { return post.text.indexOf(v) >= 0; })) continue;
+      if (channels_logins.some(function(v) { return post.text.indexOf(v) >= 0 && v !== login; })) continue;
       const htmlMessage = `<a href="${post.url}">${login}</a>\n${post.text}
 
 ${CHANNEL_ID}`;
